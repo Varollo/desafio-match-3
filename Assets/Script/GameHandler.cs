@@ -14,21 +14,24 @@ public class GameHandler : MonoBehaviour
 
     [SerializeField] public BoardView boardView;
 
+    private GameController Controller => gameController ??= new GameController();
+
     private void Awake()
     {
-        gameController = new GameController();
         boardView.onTileClick += OnTileClick;
     }
 
     private void Start()
     {
-        List<List<Tile>> board = gameController.StartGame(boardWidth, boardHeight);
+        List<List<Tile>> board = Controller.StartGame(boardWidth, boardHeight);
+        boardView.Setup(this);
         boardView.CreateBoard(board);
     }
 
     private int selectedX, selectedY = -1;
 
     private bool isAnimating;
+
 
     private void OnTileClick(int x, int y)
     {
@@ -46,7 +49,7 @@ public class GameHandler : MonoBehaviour
                 isAnimating = true;
                 boardView.SwapTiles(selectedX, selectedY, x, y).onComplete += () =>
                 {
-                    bool isValid = gameController.IsValidMovement(selectedX, selectedY, x, y);
+                    bool isValid = Controller.IsValidMovement(selectedX, selectedY, x, y);
                     if (!isValid)
                     {
                         boardView.SwapTiles(x, y, selectedX, selectedY)
@@ -54,7 +57,7 @@ public class GameHandler : MonoBehaviour
                     }
                     else
                     {
-                        List<BoardSequence> swapResult = gameController.SwapTile(selectedX, selectedY, x, y);
+                        List<BoardSequence> swapResult = Controller.SwapTile(selectedX, selectedY, x, y);
 
                         AnimateBoard(swapResult, 0, () => isAnimating = false);
                     }
@@ -90,4 +93,9 @@ public class GameHandler : MonoBehaviour
             sequence.onComplete += () => onComplete();
         }
     }
+
+    public void AddScoreListener(ScoreManager.ScoreChangedDelegate listener) => Controller.ScoreManager.OnScoreChanged += listener;
+    public void RemoveScoreListener(ScoreManager.ScoreChangedDelegate listener) => Controller.ScoreManager.OnScoreChanged -= listener;
+
+    public void IncreaseScore(int amt = 1) => Controller.ScoreManager.Score += amt;
 }

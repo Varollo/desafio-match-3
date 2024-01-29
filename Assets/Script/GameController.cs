@@ -3,12 +3,17 @@ using UnityEngine;
 
 public class GameController
 {
+    private readonly ScoreManager _scoreManager = new ScoreManager();
+
     private List<List<Tile>> _boardTiles;
     private List<int> _tilesTypes;
     private int _tileCount;
 
+    public ScoreManager ScoreManager => _scoreManager;
+
     public List<List<Tile>> StartGame(int boardWidth, int boardHeight)
     {
+        _scoreManager.Reset();
         _tilesTypes = new List<int> { 0, 1, 2, 3 };
         _boardTiles = CreateBoard(boardWidth, boardHeight, _tilesTypes);
         return _boardTiles;
