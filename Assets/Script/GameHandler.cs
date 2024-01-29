@@ -8,11 +8,11 @@ public class GameHandler : MonoBehaviour
 {
     [SerializeField] private GameController gameController;
 
-    [SerializeField] public int boardWidth = 10;
+    [SerializeField] private int boardWidth = 10;
 
-    [SerializeField] public int boardHeight = 10;
+    [SerializeField] private int boardHeight = 10;
 
-    [SerializeField] public BoardView boardView;
+    [SerializeField] private BoardView boardView;
 
     private GameController Controller => gameController ??= new GameController();
 
