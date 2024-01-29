@@ -12,11 +12,15 @@ public class BoardView : MonoBehaviour
 
     [SerializeField] private GridLayoutGroup boardContainer;
 
+    private GameHandler gameHandler;
+
     private TileSpotView[][] _tileSpots;
 
     private TileView[][] _tiles;
 
     public event Action<int, int> onTileClick;
+
+    public void Setup(GameHandler gameHandler) => this.gameHandler = gameHandler;
 
     public void CreateBoard(List<List<Tile>> board)
     {
@@ -87,6 +91,7 @@ public class BoardView : MonoBehaviour
             Vector2Int position = matchedPosition[i];
             Destroy(_tiles[position.y][position.x].gameObject);
             _tiles[position.y][position.x] = null;
+            gameHandler.IncreaseScore();
         }
         return DOVirtual.DelayedCall(0.2f, () => { });
     }
