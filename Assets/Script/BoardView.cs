@@ -86,14 +86,22 @@ public class BoardView : MonoBehaviour
 
     public Tween DestroyTiles(List<Vector2Int> matchedPosition)
     {
+        Sequence sequence = DOTween.Sequence();
+        sequence.Append(TweenUtils.GetBlankTween());
+
         for (int i = 0; i < matchedPosition.Count; i++)
         {
             Vector2Int position = matchedPosition[i];
-            Destroy(_tiles[position.y][position.x].gameObject);
+            gameHandler.IncreaseScore();
+
+            GameObject tileObj = _tiles[position.y][position.x].gameObject;
+            sequence.Join(_tiles[position.y][position.x].OnTileDestroyed()
+                .OnComplete(() => Destroy(tileObj)));
+            
             _tiles[position.y][position.x] = null;
             gameHandler.IncreaseScore();
         }
-        return DOVirtual.DelayedCall(0.2f, () => { });
+        return sequence;
     }
 
     public Tween MoveTiles(List<MovedTileInfo> movedTiles)
@@ -117,6 +125,7 @@ public class BoardView : MonoBehaviour
             Vector2Int to = movedTileInfo.to;
 
             sequence.Join(_tileSpots[to.y][to.x].AnimatedSetTile(_tiles[from.y][from.x]));
+            sequence.Join(_tiles[from.y][from.x].OnTileMove(movedTileInfo));
 
             tiles[to.y][to.x] = _tiles[from.y][from.x];
         }
