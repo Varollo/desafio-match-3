@@ -166,6 +166,16 @@ public class BoardView : MonoBehaviour
         return _tiles[0].Length;
     }
 
+    public int GetHeight()
+    {
+        return _tiles.Length;
+    }
+
+    public Vector2Int GetSize()
+    {
+        return new Vector2Int(GetWidth(), GetHeight());
+    }
+
     public Tween OnSwapSuccess(MovedTileInfo swapedTiles, BoardSequence currentSequence)
     {
         Sequence swapSequence = DOTween.Sequence();

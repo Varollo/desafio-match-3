@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BoardSequence
@@ -31,5 +32,12 @@ public class BoardSequence
 
         //log = $"matchedPosition: {matchedPosition.Count} - addedTiles: {addedTiles.Count} - movedTiles: {movedTiles.Count}";
         return log;
+    }
+
+    public void ClearTiles(IEnumerable<Vector2Int> tilePositions)
+    {
+        foreach (var tilePos in tilePositions)
+            if (!matchedPosition.Contains(tilePos))
+                matchedPosition.Add(tilePos);
     }
 }
