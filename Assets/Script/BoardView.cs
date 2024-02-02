@@ -48,6 +48,8 @@ public class BoardView : MonoBehaviour
                 {
                     TileView tilePrefab = tilePrefabRepository.tileTypePrefabList[tileTypeIndex];
                     TileView tile = Instantiate(tilePrefab);
+
+                    tile.OnTileCreated(new Vector2Int(x, y), this);
                     tileSpot.SetTile(tile);
 
                     _tiles[y][x] = tile;

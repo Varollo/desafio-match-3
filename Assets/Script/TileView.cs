@@ -4,6 +4,11 @@ using UnityEngine;
 public class TileView : MonoBehaviour
 {
     /// <summary>
+    /// Called when tile is instantiated
+    /// </summary>
+    public virtual void OnTileCreated(Vector2Int tile, BoardView board) { }
+
+    /// <summary>
     /// Called when tile moves by a result of a tile swap. NOT through chain reaction.
     /// </summary>
     public virtual Tween OnTileSwap(Vector2Int tile, BoardSequence currentSequence, BoardView board) => TweenUtils.GetBlankTween();
