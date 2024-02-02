@@ -160,6 +160,12 @@ public class BoardView : MonoBehaviour
     {
         onTileClick(x, y);
     }
+
+    public int GetWidth()
+    {
+        return _tiles[0].Length;
+    }
+
     public Tween OnSwapSuccess(MovedTileInfo swapedTiles, BoardSequence currentSequence)
     {
         Sequence swapSequence = DOTween.Sequence();
