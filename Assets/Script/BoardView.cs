@@ -95,11 +95,10 @@ public class BoardView : MonoBehaviour
             gameHandler.IncreaseScore();
 
             GameObject tileObj = _tiles[position.y][position.x].gameObject;
-            sequence.Join(_tiles[position.y][position.x].OnTileDestroyed()
+            sequence.Join(_tiles[position.y][position.x].OnTileDestroyed(position, this)
                 .OnComplete(() => Destroy(tileObj)));
             
             _tiles[position.y][position.x] = null;
-            gameHandler.IncreaseScore();
         }
         return sequence;
     }
@@ -125,7 +124,7 @@ public class BoardView : MonoBehaviour
             Vector2Int to = movedTileInfo.to;
 
             sequence.Join(_tileSpots[to.y][to.x].AnimatedSetTile(_tiles[from.y][from.x]));
-            sequence.Join(_tiles[from.y][from.x].OnTileMove(movedTileInfo));
+            sequence.Join(_tiles[from.y][from.x].OnTileMove(movedTileInfo, this));
 
             tiles[to.y][to.x] = _tiles[from.y][from.x];
         }
