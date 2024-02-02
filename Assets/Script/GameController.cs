@@ -48,9 +48,16 @@ public class GameController
         return false;
     }
 
-    public List<BoardSequence> SwapTile(int fromX, int fromY, int toX, int toY)
+    public List<BoardSequence> SwapTile(int fromX, int fromY, int toX, int toY, BoardSequence copySequence = null)
     {
         List<List<Tile>> newBoard = CopyBoard(_boardTiles);
+
+        // Saving swaped tiles to pass to tileview for OnTileSwapped callback
+        MovedTileInfo swapedTiles = new MovedTileInfo()
+        {
+            from = new Vector2Int(fromX, fromY),
+            to = new Vector2Int(toX, toY)
+        };
 
         Tile switchedTile = newBoard[fromY][fromX];
         newBoard[fromY][fromX] = newBoard[toY][toX];
@@ -66,9 +73,10 @@ public class GameController
             {
                 for (int x = 0; x < newBoard[y].Count; x++)
                 {
-                    if (matchedTiles[y][x])
+                    Vector2Int position = new Vector2Int(x, y);
+                    if (matchedTiles[y][x] || copySequence.matchedPosition.Contains(position))
                     {
-                        matchedPosition.Add(new Vector2Int(x, y));
+                        matchedPosition.Add(position);
                         newBoard[y][x] = new Tile { id = -1, type = -1 };
                     }
                 }
@@ -137,6 +145,7 @@ public class GameController
 
             BoardSequence sequence = new BoardSequence
             {
+                swapedTiles = swapedTiles,
                 matchedPosition = matchedPosition,
                 movedTiles = movedTilesList,
                 addedTiles = addedTiles

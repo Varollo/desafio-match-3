@@ -160,4 +160,13 @@ public class BoardView : MonoBehaviour
     {
         onTileClick(x, y);
     }
+    public Tween OnSwapSuccess(MovedTileInfo swapedTiles, BoardSequence currentSequence)
+    {
+        Sequence swapSequence = DOTween.Sequence();
+
+        swapSequence.Append(_tiles[swapedTiles.from.y][swapedTiles.from.x].OnTileSwap(swapedTiles.from, currentSequence, this));
+        swapSequence.Join(_tiles[swapedTiles.to.y][swapedTiles.to.x].OnTileSwap(swapedTiles.to, currentSequence, this));
+
+        return swapSequence;
+    }
 }

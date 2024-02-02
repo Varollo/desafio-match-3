@@ -3,9 +3,10 @@ using UnityEngine;
 
 public class BoardSequence
 {
-    public List<Vector2Int> matchedPosition;
-    public List<AddedTileInfo> addedTiles;
-    public List<MovedTileInfo> movedTiles;
+    public List<Vector2Int> matchedPosition = new List<Vector2Int>();
+    public List<AddedTileInfo> addedTiles = new List<AddedTileInfo>();
+    public List<MovedTileInfo> movedTiles = new List<MovedTileInfo>();
+    internal MovedTileInfo swapedTiles = new MovedTileInfo();
 
     public override string ToString()
     {

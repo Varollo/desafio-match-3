@@ -57,8 +57,15 @@ public class GameHandler : MonoBehaviour
                     }
                     else
                     {
-                        List<BoardSequence> swapResult = Controller.SwapTile(selectedX, selectedY, x, y);
+                        // Creates an empty board sequence to pass on  to swap callback of tile
+                        BoardSequence moddedSequence = new BoardSequence();
+                        boardView.OnSwapSuccess(new MovedTileInfo() 
+                        { 
+                            from = new Vector2Int(selectedX, selectedY), 
+                            to =new Vector2Int(x, y) 
+                        }, moddedSequence);
 
+                        List<BoardSequence> swapResult = Controller.SwapTile(selectedX, selectedY, x, y, moddedSequence);
                         AnimateBoard(swapResult, 0, () => isAnimating = false);
                     }
 
