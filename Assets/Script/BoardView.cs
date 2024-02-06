@@ -3,12 +3,13 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class BoardView : MonoBehaviour
 {
     [SerializeField] private TileSpotView tileSpotPrefab;
 
-    [SerializeField] private TilePrefabRepository tilePrefabRepository;
+    [SerializeField] private TilePrefabRepository tilePrefabRepo;
 
     [SerializeField] private GridLayoutGroup boardContainer;
 
@@ -36,23 +37,23 @@ public class BoardView : MonoBehaviour
 
             for (int x = 0; x < board[0].Count; x++)
             {
+                Tile tile = board[y][x];
                 TileSpotView tileSpot = Instantiate(tileSpotPrefab);
                 tileSpot.transform.SetParent(boardContainer.transform, false);
                 tileSpot.SetPosition(x, y);
                 tileSpot.onClick += OnTileSpotClick;
 
                 _tileSpots[y][x] = tileSpot;
-
-                int tileTypeIndex = board[y][x].type;
+                tileSpot.name = $"tile ({x}, {y})";
+                
+                int tileTypeIndex = tile.group;
                 if (tileTypeIndex > -1)
                 {
-                    TileView tilePrefab = tilePrefabRepository.tileTypePrefabList[tileTypeIndex];
-                    TileView tile = Instantiate(tilePrefab);
-
-                    tile.OnTileCreated(new Vector2Int(x, y), this);
-                    tileSpot.SetTile(tile);
-
-                    _tiles[y][x] = tile;
+                    TileView tileView = tile.GetTileViewInstance(tilePrefabRepo);
+                    tileView.OnTileCreated(this, tile);
+                    
+                    tileSpot.SetTile(tileView);
+                    _tiles[y][x] = tileView;
                 }
             }
         }
@@ -64,6 +65,7 @@ public class BoardView : MonoBehaviour
         {
             for (int x = 0; x < _tiles[y].Length; x++)
             {
+                _tiles[y][x].OnTileDestroyed(this);
                 Destroy(_tiles[y][x].gameObject);
                 Destroy(_tileSpots[y][x].gameObject);
             }
@@ -89,17 +91,22 @@ public class BoardView : MonoBehaviour
     public Tween DestroyTiles(List<Vector2Int> matchedPosition)
     {
         Sequence sequence = DOTween.Sequence();
-        sequence.Append(TweenUtils.GetBlankTween());
-
         for (int i = 0; i < matchedPosition.Count; i++)
         {
             Vector2Int position = matchedPosition[i];
             gameHandler.IncreaseScore();
-
-            GameObject tileObj = _tiles[position.y][position.x].gameObject;
-            sequence.Join(_tiles[position.y][position.x].OnTileDestroyed(position, this)
-                .OnComplete(() => Destroy(tileObj)));
             
+            TileView tileView = _tiles[position.y][position.x];
+            Tween onDestroy = tileView.OnTileDestroyed(this);
+            
+            if (onDestroy != null)
+            {
+                onDestroy.onComplete += () => Destroy(tileView.gameObject);
+                sequence.Join(onDestroy);
+            }
+            else
+                Destroy(tileView.gameObject);
+
             _tiles[position.y][position.x] = null;
         }
         return sequence;
@@ -126,8 +133,6 @@ public class BoardView : MonoBehaviour
             Vector2Int to = movedTileInfo.to;
 
             sequence.Join(_tileSpots[to.y][to.x].AnimatedSetTile(_tiles[from.y][from.x]));
-            sequence.Join(_tiles[from.y][from.x].OnTileMove(movedTileInfo, this));
-
             tiles[to.y][to.x] = _tiles[from.y][from.x];
         }
 
@@ -144,15 +149,14 @@ public class BoardView : MonoBehaviour
             Vector2Int position = addedTileInfo.position;
 
             TileSpotView tileSpot = _tileSpots[position.y][position.x];
+            TileView tileView = addedTileInfo.Tile.GetTileViewInstance(tilePrefabRepo);
+            
+            seq.Join(tileView.OnTileCreated(this, addedTileInfo.Tile));
+            tileSpot.SetTile(tileView);
+            _tiles[position.y][position.x] = tileView;
 
-            TileView tilePrefab = tilePrefabRepository.tileTypePrefabList[addedTileInfo.type];
-            TileView tile = Instantiate(tilePrefab);
-            tileSpot.SetTile(tile);
-
-            _tiles[position.y][position.x] = tile;
-
-            tile.transform.localScale = Vector2.zero;
-            seq.Join(tile.transform.DOScale(1.0f, 0.2f));
+            tileView.transform.localScale = Vector2.zero;
+            seq.Join(tileView.transform.DOScale(1.0f, 0.2f));
         }
 
         return seq;
@@ -161,30 +165,5 @@ public class BoardView : MonoBehaviour
     private void OnTileSpotClick(int x, int y)
     {
         onTileClick(x, y);
-    }
-
-    public int GetWidth()
-    {
-        return _tiles[0].Length;
-    }
-
-    public int GetHeight()
-    {
-        return _tiles.Length;
-    }
-
-    public Vector2Int GetSize()
-    {
-        return new Vector2Int(GetWidth(), GetHeight());
-    }
-
-    public Tween OnSwapSuccess(MovedTileInfo swapedTiles, BoardSequence currentSequence)
-    {
-        Sequence swapSequence = DOTween.Sequence();
-
-        swapSequence.Append(_tiles[swapedTiles.from.y][swapedTiles.from.x].OnTileSwap(swapedTiles.from, currentSequence, this));
-        swapSequence.Join(_tiles[swapedTiles.to.y][swapedTiles.to.x].OnTileSwap(swapedTiles.to, currentSequence, this));
-
-        return swapSequence;
     }
 }

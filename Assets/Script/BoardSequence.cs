@@ -1,13 +1,14 @@
-﻿using System;
+﻿using DG.Tweening;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class BoardSequence
 {
+    public Tween beforeSequence = TweenUtils.GetBlankTween();
     public List<Vector2Int> matchedPosition = new List<Vector2Int>();
     public List<AddedTileInfo> addedTiles = new List<AddedTileInfo>();
     public List<MovedTileInfo> movedTiles = new List<MovedTileInfo>();
-    internal MovedTileInfo swapedTiles = new MovedTileInfo();
 
     public override string ToString()
     {
@@ -32,12 +33,5 @@ public class BoardSequence
 
         //log = $"matchedPosition: {matchedPosition.Count} - addedTiles: {addedTiles.Count} - movedTiles: {movedTiles.Count}";
         return log;
-    }
-
-    public void ClearTiles(IEnumerable<Vector2Int> tilePositions)
-    {
-        foreach (var tilePos in tilePositions)
-            if (!matchedPosition.Contains(tilePos))
-                matchedPosition.Add(tilePos);
     }
 }

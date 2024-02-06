@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
@@ -14,11 +13,19 @@ public class GameHandler : MonoBehaviour
 
     [SerializeField] private BoardView boardView;
 
+    [Tooltip("Negative Seed -> randomized.")]
+    [SerializeField] private int seed = -1;
+
     private GameController Controller => gameController ??= new GameController();
 
     private void Awake()
     {
         boardView.onTileClick += OnTileClick;
+        
+        if (seed >= 0)
+            RNGManager.SetSeed(seed);
+        else
+            Debug.Log($"Game Seed: {RNGManager.Seed}");
     }
 
     private void Start()
@@ -57,18 +64,9 @@ public class GameHandler : MonoBehaviour
                     }
                     else
                     {
-                        // Creates an empty board sequence to pass on  to swap callback of tile
-                        BoardSequence moddedSequence = new BoardSequence();
-                        boardView.OnSwapSuccess(new MovedTileInfo() 
-                        { 
-                            from = new Vector2Int(selectedX, selectedY), 
-                            to =new Vector2Int(x, y) 
-                        }, moddedSequence);
-
-                        List<BoardSequence> swapResult = Controller.SwapTile(selectedX, selectedY, x, y, moddedSequence);
+                        List<BoardSequence> swapResult = Controller.SwapTile(selectedX, selectedY, x, y, boardView.transform, 2);
                         AnimateBoard(swapResult, 0, () => isAnimating = false);
                     }
-
                     selectedX = -1;
                     selectedY = -1;
                 };
@@ -86,6 +84,7 @@ public class GameHandler : MonoBehaviour
         Sequence sequence = DOTween.Sequence();
 
         BoardSequence boardSequence = boardSequences[i];
+        sequence.Append(boardSequence.beforeSequence);
         sequence.Append(boardView.DestroyTiles(boardSequence.matchedPosition));
         sequence.Append(boardView.MoveTiles(boardSequence.movedTiles));
         sequence.Append(boardView.CreateTile(boardSequence.addedTiles));
