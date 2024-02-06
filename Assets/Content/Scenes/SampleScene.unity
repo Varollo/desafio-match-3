@@ -213,7 +213,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileSpotPrefab: {fileID: -4864831497923239132, guid: 6527630aaec5689489d14bfbb482fd0f, type: 3}
-  tilePrefabRepository: {fileID: 11400000, guid: 153eac3747f207a40add49ed6e2dacb9, type: 2}
+  tilePrefabRepo: {fileID: 11400000, guid: 153eac3747f207a40add49ed6e2dacb9, type: 2}
   boardContainer: {fileID: 429446045}
 --- !u!114 &429446044
 MonoBehaviour:
@@ -249,8 +249,8 @@ MonoBehaviour:
   m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 43.5, y: 43.5}
-  m_Spacing: {x: 0, y: 0}
+  m_CellSize: {x: 40, y: 40}
+  m_Spacing: {x: 5, y: 5}
   m_Constraint: 1
   m_ConstraintCount: 10
 --- !u!1 &519420028
@@ -639,7 +639,7 @@ MonoBehaviour:
   boardWidth: 10
   boardHeight: 10
   boardView: {fileID: 429446043}
-  seed: 78765299
+  seed: -1
 --- !u!114 &1122489954
 MonoBehaviour:
   m_ObjectHideFlags: 0

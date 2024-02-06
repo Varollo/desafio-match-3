@@ -13,10 +13,8 @@ MonoBehaviour:
   m_Name: TilePrefabRepository
   m_EditorClassIdentifier: 
   tileTypePrefabList:
-  - {fileID: 8595690258952077401, guid: a6fb14bf42a1f2d46ab2f40ba89df970, type: 3}
-  - {fileID: 4993933492126411208, guid: e79087baeae77814fb7d024ccc13c2a6, type: 3}
-  - {fileID: -8652353426167559266, guid: dc3453aa1a3bbbd46aa72555404acfd6, type: 3}
-  - {fileID: 5278397621564676923, guid: dbb3cd93728abaa43a394a4320380812, type: 3}
-  - {fileID: -6353420336536694144, guid: 90b6f1c7b50730c47ba7294b1f2bbbd4, type: 3}
-  - {fileID: 2930933713693014155, guid: 21d43d9bcb34c784aba98010c0ad6084, type: 3}
-  - {fileID: 5278397621564676923, guid: dbb3cd93728abaa43a394a4320380812, type: 3}
+  - {fileID: 8595690258952077401, guid: 8211c4b6cd4606a49b227551c03fd60a, type: 3}
+  - {fileID: -4787293303005159864, guid: 75e17d3ae8512c04bb82fa1d9b640c39, type: 3}
+  - {fileID: 3290799401675154851, guid: 4eedbdf05c28e08479c9ea5434b7afd6, type: 3}
+  - {fileID: -5671152293666519497, guid: b32c7d38ac3add74f851b687aad08d84, type: 3}
+  - {fileID: -4016917348456191865, guid: 90cdc97e81786a542a044160c77e6fbf, type: 3}
