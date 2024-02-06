@@ -3,5 +3,5 @@
 public struct AddedTileInfo
 {
     public Vector2Int position;
-    public int type;
+    public Tile Tile;
 }

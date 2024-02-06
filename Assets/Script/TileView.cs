@@ -1,25 +1,26 @@
 ﻿using DG.Tweening;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TileView : MonoBehaviour
 {
-    /// <summary>
-    /// Called when tile is instantiated
-    /// </summary>
-    public virtual void OnTileCreated(Vector2Int tile, BoardView board) { }
+    [SerializeField] private Image image;
+    [SerializeField] private TileColorRepository colorRepository;
 
-    /// <summary>
-    /// Called when tile moves by a result of a tile swap. NOT through chain reaction.
-    /// </summary>
-    public virtual Tween OnTileSwap(Vector2Int tile, BoardSequence currentSequence, BoardView board) => TweenUtils.GetBlankTween();
+    protected virtual void OnDestroy()
+    {
+        transform.DOKill();
+    }
 
-    /// <summary>
-    /// Called when tile moves as a result of a chain reaction, NOT when swapped.
-    /// </summary>
-    public virtual Tween OnTileMove(MovedTileInfo moveInfo, BoardView board) => TweenUtils.GetBlankTween();
+    public virtual Tween OnTileCreated(BoardView board, Tile tile)
+    {
+        image.sprite = GetSprite(tile);
+        image.color  = GetColor (tile, colorRepository);
+        return null;
+    }
 
-    /// <summary>
-    /// Called when tile is destroyed as a result of a match, when score is computed.
-    /// </summary>
-    public virtual Tween OnTileDestroyed(Vector2Int tile, BoardView board) => TweenUtils.GetBlankTween();
+    public virtual Tween OnTileDestroyed(BoardView board) => null;
+
+    protected virtual Sprite GetSprite(Tile tile) => image.sprite;
+    protected virtual Color GetColor(Tile tile, TileColorRepository colorRepository) => colorRepository.GetColor(tile.group);
 }

@@ -30,15 +30,16 @@ public class TileSpotView : MonoBehaviour
 
     public void SetTile(TileView tile)
     {
+        _button.targetGraphic = tile.GetComponent<Graphic>();
         tile.transform.SetParent(transform, false);
         tile.transform.position = transform.position;
     }
 
-    public Tween AnimatedSetTile(TileView tile)
+    public Tween AnimatedSetTile(TileView tile, float duration = 0.3f)
     {
+        _button.targetGraphic = tile.GetComponent<Graphic>();
         tile.transform.SetParent(transform);
-        tile.transform.DOKill();
-        return tile.transform.DOMove(transform.position, 0.3f);
+        return tile.transform.DOLocalMove(Vector3.zero, duration);
     }
 
 }
