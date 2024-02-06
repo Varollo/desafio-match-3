@@ -2,7 +2,7 @@
 using TMPro;
 using UnityEngine;
 
-public class ScoreDisplay : MonoBehaviour
+public class ScoreView : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private string scoreFormat = "{0}";
